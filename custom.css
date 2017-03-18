@@ -52,7 +52,7 @@ hr {
 }
 
 #logo {
-  /*background-color: green;*/
+  font-family: 'Play', serif;
   text-align: center;
   color: #CCD;
   text-shadow: 0.5px 0.5px 0.5px #223;
@@ -125,19 +125,36 @@ rect {
   box-shadow: 3px 3px 4px rgba(0,0,0,0.7);
 }
 
-.calc-btn:hover {
+.calc-btn:hover,
+.calc-btn:active,
+.calc-btn:focus {
   background-color: #479
 }
 
 .calc-btn:active,
 .calc-btn:focus {
-  background-color: #479;
   box-shadow: inset 2px 2px 10px rgba(0,0,0,0.9);
   transform: translateY(4px);
 }
 
+.op-btn {
+  background-color: #8AC;
+  color: #225;
+}
+.op-btn:hover, 
+.op-btn:active, 
+.op-btn:focus {
+  background-color: #79B;
+}
 
-
+.clr-btn {
+  background-color: #D55;
+}
+.clr-btn:hover,
+.clr-btn:active, 
+.clr-btn:focus {
+  background-color: #C44;
+}
 
 
 
