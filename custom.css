@@ -51,12 +51,19 @@ hr {
   box-shadow: 7px 10px 34px 1px rgba(0, 0, 0, 0.68), inset -1px -6px 12px 0.1px #245;
 }
 
+#logo {
+  /*background-color: green;*/
+  text-align: center;
+  color: #CCD;
+  text-shadow: 0.5px 0.5px 0.5px #223;
+}
+
 #display {
   background-color: #EEE;
   color: rgba(60, 60, 60, 0.8);
   width: 280px;
   height: 60px;
-  margin: 15px auto 0 auto;
+  margin: 5px auto 0 auto;
   border-radius: 100px 100px 100px 100px / 5px;
   padding: 10px 5px 10px 5px;
   text-align: right;
@@ -72,14 +79,14 @@ hr {
 
 #solar-panel {
   box-shadow: inset 8px 5px 7px 0px rgba(0,0,0,0.9);
-  /*vertical-align: middle;*/
   y: 30px;
   margin-left: 12px;
   margin-bottom: 20px;
-  margin-right: 12px;
+  margin-right: 8px;
   width: 124px;
   height: 50px;
 }
+
 rect {
   width: 30px;
   height: 50px;
@@ -99,27 +106,20 @@ rect {
   background-color: white;
 }
 
-/*.calc-btn {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  margin-left: 12px;
-  margin-bottom: 20px;
-}*/
-
 .calc-btn {
+  padding: 0;
   vertical-align: top;
-  width: 50px;
-  height: 50px;
-  margin-right: 10px;
-  margin-left: 12px;
-  margin-bottom: 20px;
+  width: 46px;
+  height: 46px;
+  margin-right: 8px;
+  margin-left: 16px;
+  margin-bottom: 18px;
   color: #fff;
   background-color: #58A;
   border: none;
-  border-radius: 15px;
+  border-radius: 50%;
   display: inline-block;
+  font-family: 'Play', sans-serif;
   font-size: 24px;
   text-align: center;
   box-shadow: 3px 3px 4px rgba(0,0,0,0.7);

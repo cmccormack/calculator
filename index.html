@@ -5,7 +5,7 @@
   <title>Javascript Calculator - Chris McCormack</title>
   <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
   <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Play|VT323|Quicksand" rel="stylesheet">
   <!-- JavaScript - jQuery must be loaded prior to Bootstrap -->
   <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
@@ -38,7 +38,7 @@
       </button>
       <!-- Navbar brand on far left of navbar -->
       <a class="navbar-brand text-shadow-white" href="http://mackville.net">
-        <i class="fa fa-twitch"></i>&nbsp;&nbsp;Chris McCormack</a>
+        <i class="fa fa-calculator"></i>&nbsp;&nbsp;Chris McCormack</a>
       <div class="collapse navbar-collapse justify-content-end" id="navbar-toggle">
         <div class="navbar-nav">
           <a class="nav-item nav-link text-shadow-white" id="Portfolio" href="../index.html">Portfolio</a>
@@ -48,17 +48,29 @@
   </div>
   <!-- End Top Navbar -->
 
-
+  <!-- Main body contains calculator, excludes header and footer -->
   <div class="main">
 
+    <!-- Calculator Begin -->
     <div class="calc">
+
+      <!-- Upper Logo -->
+      <div id="logo">
+        <i class="fa fa-beer"></i>
+        <span id="logo-text">Mackville Instruments</span>
+      </div>
+
+      <!-- Output Display -->
       <div id="display-row">
         <div id="display">0</div>
       </div>
 
       <hr/>
 
+      <!-- Buttons Grouping -->
       <div id="buttons">
+
+        <!-- Bad Solar Panel, will replace with something better later -->
         <svg id="solar-panel">
           <rect x="3" y="0" height="50"/>
           <rect x="32" y="0" height="50"/>
