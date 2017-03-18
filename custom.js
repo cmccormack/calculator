@@ -128,10 +128,7 @@ function digitButtonPress(value) {
   if (text == "0" || !text){
     if (value == "0"){
       return 0;
-    } else {
-      
-    }
-
+    } 
   }
 
   text += value;
