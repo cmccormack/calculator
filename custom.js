@@ -31,10 +31,8 @@ $('document').ready(function() {
   // Default the current variables and display screen text
   clearButtonPress();
   
-  // For debugging, remove later
-  $("#solar-panel").click(function(e){
-    console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]");
-  });
+
+
 
   $(".calc-btn").click(function(e) {
     var $button = $(e.target),
@@ -45,12 +43,7 @@ $('document').ready(function() {
     console.log("[" + buttonName + "] button clicked: " + buttonVal);
 
     if (buttonName == "clear"){ clearButtonPress(); return 0; }
-
-
-
-
     if (buttonName == "digit"){
-
       // Return early if no more room in display
       if (String(text).length >= 15) {
         console.log("Display text gte 15: " + $display.text());
@@ -58,29 +51,34 @@ $('document').ready(function() {
       }
       digitButtonPress(buttonVal);
     }
-
-    if (buttonName == "op"){
-      opButtonPress(buttonVal);
-    }
-    if (buttonName == "eq"){
-      eqButtonPress();
-    }
-    if (buttonName == "convert" && buttonVal == "percent"){
-      if (!text) { text = 0; }
-      if (chain) {
-        text = parseFloat(text) / 100;
-        displayText(text);
-        currentTotal = calculate(op);
-      } else {
-        text = parseFloat(acc) / 100;
-        displayText(text);
-        currentTotal = text;
-        eqButtonPress();
+    if (buttonName == "op"){ opButtonPress(buttonVal); }
+    if (buttonName == "eq"){ eqButtonPress(); }
+    if (buttonName == "convert"){
+      if (buttonVal == "percent"){
+        if (!text) { text = 0; }
+        if (chain) {
+          text = parseFloat(text) / 100;
+          displayText(text);
+          currentTotal = calculate(op);
+        } else {
+          text = parseFloat(acc) / 100;
+          displayText(text);
+          currentTotal = text;
+          eqButtonPress();
+        }
       }
-      
+      if (buttonVal == "sign"){
+        // if (!text || parseFloat(text) == 0){
+        //   // do nothing
+        // } else {
+          text -= (text * 2);
+          currentTotal -= (currentTotal * 2);
+          displayText(text);
+        // }
+      }
     }
 
-    $("#solar-panel").click();
+    debugoutput();
 
   });
 });
@@ -156,6 +154,7 @@ function clearButtonPress(display) {
   chain = true;
   $display.removeClass("small");
   displayText(display);
+  debugoutput();
 }
 
 
@@ -173,6 +172,9 @@ function calculate(op) {
       break;
     case "sub":
       return acc - t;
+      break;
+    case "power":
+      return Math.pow(acc, t);
       break;
     default:
       return t;
@@ -206,4 +208,10 @@ function displayText(t) {
   }
 
   $display.text(t);
+}
+
+
+// For debugging, remove later
+function debugoutput (){
+  console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]");
 }
