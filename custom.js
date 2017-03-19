@@ -1,23 +1,39 @@
-
 var text = "",
-    button = "",
-    op = "",
-    acc = "",
-    chain = true,
-    lastTotal =0,
-    currentTotal = 0,
-    hasDecimal = false,
-    displayobj = {},
-    $display,
-    conversions = {
-      "percent": function(val){ return parseFloat(val) / 100; },
-      "sign": function(val){ return val -= (val * 2); },
-      "del": function(val) {
-        val = String(val).slice(0, val.length - 1);
-        if (!val) { val = "0"; };
-        return val;
-      }
-    };
+  button = "",
+  op = "",
+  acc = "",
+  chain = true,
+  lastTotal = 0,
+  currentTotal = 0,
+  hasDecimal = false,
+  displayobj = {},
+  $display;
+
+var conversions = {
+  "percent": function(n) {
+    return parseFloat(n) / 100; },
+  "sign": function(n) {
+    return n -= (n * 2); },
+  "del": function(n) {
+    n = String(n).slice(0, n.length - 1);
+    return n || "0"; }
+};
+
+var numpadKeys = {
+  "8": "del",
+  "46": "del",
+  "13": "eq",
+  "187": "eq",
+  "53": "percent",
+  "106": "mult",
+  "107": "add",
+  "109": "sub",
+  "189": "sub",
+  "110": ".",
+  "190": ".",
+  "111": "div",
+  "191": "div"
+}
 
 $('document').ready(function() {
   console.log("Page Loaded!");
@@ -33,84 +49,72 @@ $('document').ready(function() {
     "small": {
       "font-size": '32px',
       "line-height": '60px'
-    },
-    current: "normal"
+    }
   };
 
-
-
-  $(".calc-btn").click(function(e) { 
+  // Connect event handlers to function calls
+  $(this).keyup(function(e) { keyPress(e.which); });
+  $(".calc-btn").click(function(e) {
     var $button = $(e.target);
-    buttonPress($button.attr("name"), $button.attr("value"), $button); 
+    buttonPress($button.attr("name"), $button.attr("value"), $button);
   });
 
-  // Default the current variables and display screen text
+  // Simulate clear button press
   buttonPress("clear");
-
-  $(this).keyup(function(e) { keyPress(e.which); });
 
 });
 
-var numpadKeys = {
-  "8": "del", "46": "del",
-  "13": "eq", "187": "eq",
-  "53": "percent",
-  "106": "mult",
-  "107": "add",
-  "109": "sub", "189": "sub",
-  "110": ".", "190": ".",
-  "111": "div", "191": "div"
-}
 
-function keyPress(key){
+// Allows numpad use as well as some keyboard keys
+function keyPress(key) {
   var offset = 48,
-      numpadOffset = 96,
-      keyStr;
+    numpadOffset = 96,
+    keyStr;
 
   if (key - offset >= 0 && key - offset <= 9) {
     keyStr = String(key - offset);
-  } else if (key - numpadOffset >= 0 && key - numpadOffset <= 9){
+  } else if (key - numpadOffset >= 0 && key - numpadOffset <= 9) {
     keyStr = String(key - numpadOffset);
   } else {
-    if (numpadKeys.hasOwnProperty(key)){
+    if (numpadKeys.hasOwnProperty(key)) {
       keyStr = String(numpadKeys[key]);
     }
   }
 
-  if (keyStr == "del"){
+  if (keyStr == "del") {
     buttonPress("convert", "del");
   } else {
     $("[value='" + keyStr + "']").click();
   }
-  
+
   console.log("Keyboard Key Pressed: " + key + "(" + typeof key + ")");
 }
 
 
-function buttonPress(buttonName, buttonVal, $target){
+function buttonPress(buttonName, buttonVal, $target) {
 
-  if ($target){ $target.blur(); }
+  if ($target) { $target.blur(); }
   console.log("[" + buttonName + "] button clicked: " + buttonVal);
 
-  if (buttonName == "clear"){ clearButtonPress(); }
-  else if (buttonName == "del"){ backspaceButtonPress(); }
-  else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
-  else if (buttonName == "op"){ opButtonPress(buttonVal); }
-  else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
-  else if (buttonName == "eq"){ eqButtonPress(); }
+  if (buttonName == "clear") { 
+    clearButtonPress(); 
+  } else if (buttonName == "del") { 
+    backspaceButtonPress(); 
+  } else if (buttonName == "digit") { 
+    digitButtonPress(buttonVal); 
+  } else if (buttonName == "op") { 
+    opButtonPress(buttonVal); 
+  } else if (buttonName == "convert") { 
+    convertValue(text, conversions[buttonVal]); 
+  } else if (buttonName == "eq") { 
+    eqButtonPress(); 
+  }
 
   debugoutput();
 }
 
 
-// function backspaceButtonPress(){
-//   text = text.slice(0, text.length - 1);
-//   if (!text) { text = "0"; };
-//   currentTotal = calculate(op);
-//   displayText(text);
-// }
-
-function eqButtonPress(){
+function eqButtonPress() {
   acc = currentTotal;
   chain = false;
   currentTotal = calculate(op);
@@ -120,8 +124,11 @@ function eqButtonPress(){
 
 
 function opButtonPress(value) {
-  
-  if (!chain) { currentTotal = acc; }
+
+  if (!chain) { 
+    currentTotal = acc; 
+  }
+
   acc = currentTotal;
   text = "0";
   hasDecimal = false;
@@ -142,27 +149,27 @@ function digitButtonPress(value) {
     });
     return 0;
   }
-  
+
   // Start new chain of calculations if equals was pressed with no new op
-  if (!chain){
+  if (!chain) {
     clearButtonPress();
   }
 
   // Add decimal if no decimal exists and set flag
-  if (value == "."){
-    if (hasDecimal){
+  if (value == ".") {
+    if (hasDecimal) {
       value = "";
     } else {
       hasDecimal = true;
     }
-  } 
-  
+  }
+
   // Allows text to be replaced by value if text is default "0" and no decimal
-  if (text === "0"){
-    if (!hasDecimal){
+  if (text === "0") {
+    if (!hasDecimal) {
       text = "";
-    } 
-  } 
+    }
+  }
 
   // Append value to text, then calculate the potential total and display text
   text += value;
@@ -172,7 +179,6 @@ function digitButtonPress(value) {
 
 
 function clearButtonPress(display) {
-
   text = "0";
   op = "";
   acc = "";
@@ -187,7 +193,7 @@ function clearButtonPress(display) {
 
 function calculate(op) {
   var t = parseFloat(text),
-      total = t;
+    total = t;
   switch (op) {
     case "mult":
       return acc * t;
@@ -204,6 +210,7 @@ function calculate(op) {
   }
 }
 
+
 function setDisplay(obj) {
   $display.css("font-size", obj['font-size']);
   $display.css('line-height', obj['line-height']);
@@ -211,14 +218,14 @@ function setDisplay(obj) {
 
 
 // Attribution goes to Dagg Nabbit @ http://stackoverflow.com/a/3885844
-function isFloat(n){
-  return n === +n && n !== (n|0);
+function isFloat(n) {
+  return n === +n && n !== (n | 0);
 }
 
 
-function convertFloat(val, prec){
+function convertFloat(val, prec) {
   prec = prec || 7;
-  if (isFloat(val)){
+  if (isFloat(val)) {
     return parseFloat(val.toPrecision(prec));
   }
   return val;
@@ -226,9 +233,10 @@ function convertFloat(val, prec){
 
 
 function displayText(t) {
-
+  t = String(t);
+  
   // Error out if current total is gte 10^100
-  if (acc >= Math.pow(10, 100) || (acc <= Math.pow(10,-100) && acc > 0) ){
+  if (acc >= Math.pow(10, 100) || (acc <= Math.pow(10, -100) && acc > 0)) {
     clearButtonPress("ERROR");
     return 0;
   }
@@ -237,6 +245,7 @@ function displayText(t) {
   currentTotal = convertFloat(currentTotal);
   t = String(convertFloat(t));
   acc = convertFloat(acc);
+
 
   // Change font size and line height to fit more characters
   if (String(t).length > 9) {
@@ -247,11 +256,11 @@ function displayText(t) {
   }
 
   $display.text(t);
-  
+
 }
 
 
-function convertValue(val, func){
+function convertValue(val, func) {
 
   if (chain) {
     text = func(val);
@@ -265,9 +274,9 @@ function convertValue(val, func){
 }
 
 // For debugging, remove later
-function debugoutput (){
-  console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", 
-    "currentTotal[" + currentTotal + "]", 
+function debugoutput() {
+  console.log("acc[" + acc + "]", "text[" + text + "]", "op[" + op + "]",
+    "currentTotal[" + currentTotal + "]",
     "text type: [" + typeof text + "]", "hasDecimal[" + hasDecimal + "]",
     "chain[" + chain + "]");
 }
