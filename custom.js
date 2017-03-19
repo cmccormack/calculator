@@ -36,23 +36,15 @@ $('document').ready(function() {
   clearButtonPress();
 
   $(".calc-btn").click(function(e) { buttonPress($(e.target)); });
-    // var $button = $(e.target),
-    //     buttonName = $button.attr("name"),
-    //     buttonVal = $button.attr("value");
+  $(this).keypress(function(e) { keyPress(e.which); });
 
-    // $button.blur();
-    // console.log("[" + buttonName + "] button clicked: " + buttonVal);
-
-    // if (buttonName == "clear"){ clearButtonPress(); }
-    // else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
-    // else if (buttonName == "op"){ opButtonPress(buttonVal); }
-    // else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
-    // else if (buttonName == "eq"){ eqButtonPress(); }
-
-    // debugoutput();
-
-  // });
 });
+
+
+function keyPress(key){
+  console.log("Keyboard Key Pressed: [" + key + "]");
+}
+
 
 function buttonPress($target){
   var $button = $target,
