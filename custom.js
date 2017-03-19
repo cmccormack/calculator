@@ -8,7 +8,11 @@ var text = "",
     currentTotal = 0,
     hasDecimal = false,
     displayobj = {},
-    $display;
+    $display,
+    conversions = {
+      "percent": function(val){ return parseFloat(val) / 100; },
+      "sign": function(val){ return val -= (val * 2); }
+    };
 
 $('document').ready(function() {
   console.log("Page Loaded!");
@@ -53,30 +57,7 @@ $('document').ready(function() {
     }
     if (buttonName == "op"){ opButtonPress(buttonVal); }
     if (buttonName == "eq"){ eqButtonPress(); }
-    if (buttonName == "convert"){
-      if (buttonVal == "percent"){
-        if (!text) { text = 0; }
-        if (chain) {
-          text = parseFloat(text) / 100;
-          displayText(text);
-          currentTotal = calculate(op);
-        } else {
-          text = parseFloat(acc) / 100;
-          displayText(text);
-          currentTotal = text;
-          eqButtonPress();
-        }
-      }
-      if (buttonVal == "sign"){
-        // if (!text || parseFloat(text) == 0){
-        //   // do nothing
-        // } else {
-          text -= (text * 2);
-          currentTotal -= (currentTotal * 2);
-          displayText(text);
-        // }
-      }
-    }
+    if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
 
     debugoutput();
 
@@ -93,10 +74,11 @@ function eqButtonPress(){
 
 }
 
+
 function opButtonPress(value) {
   if (!chain) { currentTotal = acc; }
   acc = currentTotal;
-  text = "";
+  text = "0";
   hasDecimal = false;
   chain = true;
   op = value;
@@ -117,7 +99,6 @@ function digitButtonPress(value) {
     } else {
       hasDecimal = true;
     }
-    
   } 
   
   if (text === "0"){
@@ -125,7 +106,6 @@ function digitButtonPress(value) {
       text = "";
     } 
   } 
-
 
   text += value;
 
@@ -209,9 +189,23 @@ function displayText(t) {
 }
 
 
+function convertValue(val, func){
+  console.log("val: " + text);
+  text = func(val);
+  console.log("val: " + text);
+  displayText(text);
+
+  if (chain) {
+    currentTotal = calculate(op);
+  } else {
+    currentTotal = text;
+    eqButtonPress();
+  }
+}
+
 // For debugging, remove later
 function debugoutput (){
   console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", 
     "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]", 
-    "text type: [" + typeof text + "]");
+    "text type: [" + typeof text + "]", "hasDecimal[" + hasDecimal + "]");
 }
