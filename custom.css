@@ -68,8 +68,8 @@ hr {
   padding: 10px 5px 10px 5px;
   text-align: right;
   line-height: 40px;
-  font-size: 64px;
   font-family: 'VT323', monospace;
+  font-size: 64px;
   box-shadow: inset 2px 2px 4px 1px rgba(0,0,0,0.9);
 }
 #display.small {

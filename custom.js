@@ -11,7 +11,12 @@ var text = "",
     $display,
     conversions = {
       "percent": function(val){ return parseFloat(val) / 100; },
-      "sign": function(val){ return val -= (val * 2); }
+      "sign": function(val){ return val -= (val * 2); },
+      "del": function(val) {
+        val = String(val).slice(0, val.length - 1);
+        if (!val) { val = "0"; };
+        return val;
+      }
     };
 
 $('document').ready(function() {
@@ -32,29 +37,63 @@ $('document').ready(function() {
     current: "normal"
   };
 
-  // Default the current variables and display screen text
-  clearButtonPress();
 
-  $(".calc-btn").click(function(e) { buttonPress($(e.target)); });
-  $(this).keypress(function(e) { keyPress(e.which); });
+
+  $(".calc-btn").click(function(e) { 
+    var $button = $(e.target);
+    buttonPress($button.attr("name"), $button.attr("value"), $button); 
+  });
+
+  // Default the current variables and display screen text
+  buttonPress("clear");
+
+  $(this).keyup(function(e) { keyPress(e.which); });
 
 });
 
+var numpadKeys = {
+  "8": "del", "46": "del",
+  "13": "eq", "187": "eq",
+  "53": "percent",
+  "106": "mult",
+  "107": "add",
+  "109": "sub", "189": "sub",
+  "110": ".", "190": ".",
+  "111": "div", "191": "div"
+}
 
 function keyPress(key){
-  console.log("Keyboard Key Pressed: [" + key + "]");
+  var offset = 48,
+      numpadOffset = 96,
+      keyStr;
+
+  if (key - offset >= 0 && key - offset <= 9) {
+    keyStr = String(key - offset);
+  } else if (key - numpadOffset >= 0 && key - numpadOffset <= 9){
+    keyStr = String(key - numpadOffset);
+  } else {
+    if (numpadKeys.hasOwnProperty(key)){
+      keyStr = String(numpadKeys[key]);
+    }
+  }
+
+  if (keyStr == "del"){
+    buttonPress("convert", "del");
+  } else {
+    $("[value='" + keyStr + "']").click();
+  }
+  
+  console.log("Keyboard Key Pressed: " + key + "(" + typeof key + ")");
 }
 
 
-function buttonPress($target){
-  var $button = $target,
-      buttonName = $button.attr("name"),
-      buttonVal = $button.attr("value");
+function buttonPress(buttonName, buttonVal, $target){
 
-  $button.blur();
+  if ($target){ $target.blur(); }
   console.log("[" + buttonName + "] button clicked: " + buttonVal);
 
   if (buttonName == "clear"){ clearButtonPress(); }
+  else if (buttonName == "del"){ backspaceButtonPress(); }
   else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
   else if (buttonName == "op"){ opButtonPress(buttonVal); }
   else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
@@ -63,6 +102,13 @@ function buttonPress($target){
   debugoutput();
 }
 
+
+// function backspaceButtonPress(){
+//   text = text.slice(0, text.length - 1);
+//   if (!text) { text = "0"; };
+//   currentTotal = calculate(op);
+//   displayText(text);
+// }
 
 function eqButtonPress(){
   acc = currentTotal;
@@ -125,12 +171,8 @@ function digitButtonPress(value) {
 }
 
 
-function isFloat(num){
-  return Number(num) === num && num % 1 !== 0;
-}
-
-
 function clearButtonPress(display) {
+
   text = "0";
   op = "";
   acc = "";
@@ -140,12 +182,12 @@ function clearButtonPress(display) {
   chain = true;
   $display.removeClass("small");
   displayText(display);
-  debugoutput();
 }
 
 
 function calculate(op) {
-  var t = parseFloat(text);
+  var t = parseFloat(text),
+      total = t;
   switch (op) {
     case "mult":
       return acc * t;
@@ -168,6 +210,21 @@ function setDisplay(obj) {
 }
 
 
+// Attribution goes to Dagg Nabbit @ http://stackoverflow.com/a/3885844
+function isFloat(n){
+  return n === +n && n !== (n|0);
+}
+
+
+function convertFloat(val, prec){
+  prec = prec || 7;
+  if (isFloat(val)){
+    return parseFloat(val.toPrecision(prec));
+  }
+  return val;
+}
+
+
 function displayText(t) {
 
   // Error out if current total is gte 10^100
@@ -176,15 +233,10 @@ function displayText(t) {
     return 0;
   }
 
-  if (isFloat(currentTotal)){
-    currentTotal = parseFloat(currentTotal.toPrecision(1 + 7));
-  }
-  if (isFloat(t)){
-    t = String(parseFloat(t.toPrecision(1 + 7)));
-  }
-  if (isFloat(acc)){
-    acc = parseFloat(acc.toPrecision(1 + 7));
-  }
+  // Remove some precision to keep the answer short
+  currentTotal = convertFloat(currentTotal);
+  t = String(convertFloat(t));
+  acc = convertFloat(acc);
 
   // Change font size and line height to fit more characters
   if (String(t).length > 9) {
@@ -194,9 +246,6 @@ function displayText(t) {
     $display.removeClass('small');
   }
 
-  if (String(t).indexOf('e') !== -1){
-    t = Number(t).toPrecision(1 + 7);
-  }
   $display.text(t);
   
 }
@@ -209,8 +258,8 @@ function convertValue(val, func){
     displayText(text);
     currentTotal = calculate(op);
   } else {
-    currentTotal = func(acc);
-    text = currentTotal;
+    currentTotal = parseFloat(func(acc));
+    text = String(currentTotal);
     eqButtonPress();
   }
 }
@@ -219,5 +268,6 @@ function convertValue(val, func){
 function debugoutput (){
   console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", 
     "currentTotal[" + currentTotal + "]", 
-    "text type: [" + typeof text + "]", "hasDecimal[" + hasDecimal + "]");
+    "text type: [" + typeof text + "]", "hasDecimal[" + hasDecimal + "]",
+    "chain[" + chain + "]");
 }
