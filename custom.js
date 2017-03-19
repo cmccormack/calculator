@@ -34,9 +34,6 @@ $('document').ready(function() {
 
   // Default the current variables and display screen text
   clearButtonPress();
-  
-
-
 
   $(".calc-btn").click(function(e) {
     var $button = $(e.target),
@@ -46,18 +43,11 @@ $('document').ready(function() {
     $button.blur();
     console.log("[" + buttonName + "] button clicked: " + buttonVal);
 
-    if (buttonName == "clear"){ clearButtonPress(); return 0; }
-    if (buttonName == "digit"){
-      // Return early if no more room in display
-      if (String(text).length >= 15) {
-        console.log("Display text gte 15: " + $display.text());
-        return 0;
-      }
-      digitButtonPress(buttonVal);
-    }
-    if (buttonName == "op"){ opButtonPress(buttonVal); }
-    if (buttonName == "eq"){ eqButtonPress(); }
-    if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
+    if (buttonName == "clear"){ clearButtonPress(); }
+    else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
+    else if (buttonName == "op"){ opButtonPress(buttonVal); }
+    else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
+    else if (buttonName == "eq"){ eqButtonPress(); }
 
     debugoutput();
 
@@ -67,11 +57,8 @@ $('document').ready(function() {
 function eqButtonPress(){
   acc = currentTotal;
   chain = false;
-  lastTotal = currentTotal;
-  if (text) { currentTotal = calculate(op); }
-  
+  currentTotal = calculate(op);
   displayText(acc);
-
 }
 
 
@@ -82,13 +69,24 @@ function opButtonPress(value) {
   hasDecimal = false;
   chain = true;
   op = value;
-  lastTotal = currentTotal;
   displayText(currentTotal);
 }
 
 
 function digitButtonPress(value) {
 
+
+  // Return early if no more room in display
+  if (text.length >= 15) {
+    console.log("Display text gte 15: " + $display.text());
+    // $( "#display" ).effect( "shake", { times: 2, distance: 2 } );
+    $("#display").css("background-color", "#D55");
+    $("#display").animate({
+      backgroundColor: "#EEE"
+    });
+    return 0;
+  }
+      
   if (!chain){
     clearButtonPress();
   }
@@ -126,7 +124,6 @@ function clearButtonPress(display) {
   op = "";
   acc = "";
   display = display || "0";
-  lastTotal = 0;
   currentTotal = 0;
   hasDecimal = false;
   chain = true;
@@ -185,7 +182,12 @@ function displayText(t) {
     $display.removeClass('small');
   }
 
-  $display.text(t);
+  if (String(t).indexOf('e') !== -1){
+    $display.text(Number(t).toPrecision(1 + 3));
+  } else{
+    $display.text(t);
+  }
+  
 }
 
 
@@ -206,6 +208,6 @@ function convertValue(val, func){
 // For debugging, remove later
 function debugoutput (){
   console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", 
-    "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]", 
+    "currentTotal[" + currentTotal + "]", 
     "text type: [" + typeof text + "]", "hasDecimal[" + hasDecimal + "]");
 }
