@@ -56,6 +56,7 @@ $('document').ready(function() {
 
 function eqButtonPress(){
   acc = currentTotal;
+
   chain = false;
   currentTotal = calculate(op);
   displayText(acc);
@@ -63,6 +64,7 @@ function eqButtonPress(){
 
 
 function opButtonPress(value) {
+  
   if (!chain) { currentTotal = acc; }
   acc = currentTotal;
   text = "0";
@@ -75,22 +77,22 @@ function opButtonPress(value) {
 
 function digitButtonPress(value) {
 
-
-  // Return early if no more room in display
+  // Apply color effect and return early if no more room in display
   if (text.length >= 15) {
     console.log("Display text gte 15: " + $display.text());
-    // $( "#display" ).effect( "shake", { times: 2, distance: 2 } );
     $("#display").css("background-color", "#D55");
     $("#display").animate({
       backgroundColor: "#EEE"
     });
     return 0;
   }
-      
+  
+  // Start new chain of calculations if equals was pressed with no new op
   if (!chain){
     clearButtonPress();
   }
 
+  // Add decimal if no decimal exists and set flag
   if (value == "."){
     if (hasDecimal){
       value = "";
@@ -99,17 +101,16 @@ function digitButtonPress(value) {
     }
   } 
   
+  // Allows text to be replaced by value if text is default "0" and no decimal
   if (text === "0"){
     if (!hasDecimal){
       text = "";
     } 
   } 
 
+  // Append value to text, then calculate the potential total and display text
   text += value;
-
-  // Keeps running total
   currentTotal = calculate(op);
-
   displayText(text);
 }
 
@@ -165,13 +166,19 @@ function setDisplay(obj) {
 function displayText(t) {
 
   // Error out if current total is gte 10^100
-  if (currentTotal >= Math.pow(10, 100)) {
+  if (acc >= Math.pow(10, 100) || (acc <= Math.pow(10,-100) && acc > 0) ){
     clearButtonPress("ERROR");
     return 0;
   }
 
   if (isFloat(currentTotal)){
-    currentTotal = parseFloat(currentTotal.toFixed(14));
+    currentTotal = parseFloat(currentTotal.toPrecision(1 + 3));
+  }
+  if (isFloat(t)){
+    t = String(parseFloat(t.toPrecision(1 + 3)));
+  }
+  if (isFloat(acc)){
+    acc = parseFloat(acc.toPrecision(1 + 3));
   }
 
   // Change font size and line height to fit more characters
@@ -183,10 +190,9 @@ function displayText(t) {
   }
 
   if (String(t).indexOf('e') !== -1){
-    $display.text(Number(t).toPrecision(1 + 3));
-  } else{
-    $display.text(t);
+    t = Number(t).toPrecision(1 + 3);
   }
+  $display.text(t);
   
 }
 
