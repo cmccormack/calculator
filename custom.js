@@ -35,29 +35,48 @@ $('document').ready(function() {
   // Default the current variables and display screen text
   clearButtonPress();
 
-  $(".calc-btn").click(function(e) {
-    var $button = $(e.target),
-        buttonName = $button.attr("name"),
-        buttonVal = $button.attr("value");
+  $(".calc-btn").click(function(e) { buttonPress($(e.target)); });
+    // var $button = $(e.target),
+    //     buttonName = $button.attr("name"),
+    //     buttonVal = $button.attr("value");
 
-    $button.blur();
-    console.log("[" + buttonName + "] button clicked: " + buttonVal);
+    // $button.blur();
+    // console.log("[" + buttonName + "] button clicked: " + buttonVal);
 
-    if (buttonName == "clear"){ clearButtonPress(); }
-    else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
-    else if (buttonName == "op"){ opButtonPress(buttonVal); }
-    else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
-    else if (buttonName == "eq"){ eqButtonPress(); }
+    // if (buttonName == "clear"){ clearButtonPress(); }
+    // else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
+    // else if (buttonName == "op"){ opButtonPress(buttonVal); }
+    // else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
+    // else if (buttonName == "eq"){ eqButtonPress(); }
 
-    debugoutput();
+    // debugoutput();
 
-  });
+  // });
 });
+
+function buttonPress($target){
+  var $button = $target,
+      buttonName = $button.attr("name"),
+      buttonVal = $button.attr("value");
+
+  $button.blur();
+  console.log("[" + buttonName + "] button clicked: " + buttonVal);
+
+  if (buttonName == "clear"){ clearButtonPress(); }
+  else if (buttonName == "digit"){ digitButtonPress(buttonVal); }
+  else if (buttonName == "op"){ opButtonPress(buttonVal); }
+  else if (buttonName == "convert"){ convertValue(text, conversions[buttonVal]); }
+  else if (buttonName == "eq"){ eqButtonPress(); }
+
+  debugoutput();
+}
+
 
 function eqButtonPress(){
   acc = currentTotal;
   chain = false;
   currentTotal = calculate(op);
+  text = String(parseFloat(text));
   displayText(acc);
 }
 
