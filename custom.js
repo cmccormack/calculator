@@ -56,7 +56,6 @@ $('document').ready(function() {
 
 function eqButtonPress(){
   acc = currentTotal;
-
   chain = false;
   currentTotal = calculate(op);
   displayText(acc);
@@ -139,19 +138,14 @@ function calculate(op) {
   switch (op) {
     case "mult":
       return acc * t;
-      break;
     case "div":
       return acc / t;
-      break;
     case "add":
       return acc + t;
-      break;
     case "sub":
       return acc - t;
-      break;
     case "power":
       return Math.pow(acc, t);
-      break;
     default:
       return t;
   }
@@ -172,13 +166,13 @@ function displayText(t) {
   }
 
   if (isFloat(currentTotal)){
-    currentTotal = parseFloat(currentTotal.toPrecision(1 + 3));
+    currentTotal = parseFloat(currentTotal.toPrecision(1 + 7));
   }
   if (isFloat(t)){
-    t = String(parseFloat(t.toPrecision(1 + 3)));
+    t = String(parseFloat(t.toPrecision(1 + 7)));
   }
   if (isFloat(acc)){
-    acc = parseFloat(acc.toPrecision(1 + 3));
+    acc = parseFloat(acc.toPrecision(1 + 7));
   }
 
   // Change font size and line height to fit more characters
@@ -190,7 +184,7 @@ function displayText(t) {
   }
 
   if (String(t).indexOf('e') !== -1){
-    t = Number(t).toPrecision(1 + 3);
+    t = Number(t).toPrecision(1 + 7);
   }
   $display.text(t);
   
@@ -198,15 +192,14 @@ function displayText(t) {
 
 
 function convertValue(val, func){
-  console.log("val: " + text);
-  text = func(val);
-  console.log("val: " + text);
-  displayText(text);
 
   if (chain) {
+    text = func(val);
+    displayText(text);
     currentTotal = calculate(op);
   } else {
-    currentTotal = text;
+    currentTotal = func(acc);
+    text = currentTotal;
     eqButtonPress();
   }
 }
