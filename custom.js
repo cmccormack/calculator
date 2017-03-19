@@ -111,23 +111,21 @@ function digitButtonPress(value) {
     clearButtonPress();
   }
 
-  // Only allows one decimal to be added
-  if (value == ".") {
+  if (value == "."){
     if (hasDecimal){
-      return 0;      
+      value = "";
+    } else {
+      hasDecimal = true;
     }
-    if (!text){
-      text = "0";
-    }
-    hasDecimal = true;
-  }
-
-
-  if (text == "0" || !text){
-    if (value == "0"){
-      return 0;
+    
+  } 
+  
+  if (text === "0"){
+    if (!hasDecimal){
+      text = "";
     } 
-  }
+  } 
+
 
   text += value;
 
@@ -144,7 +142,7 @@ function isFloat(num){
 
 
 function clearButtonPress(display) {
-  text = "";
+  text = "0";
   op = "";
   acc = "";
   display = display || "0";
@@ -213,5 +211,7 @@ function displayText(t) {
 
 // For debugging, remove later
 function debugoutput (){
-  console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]");
+  console.log("acc["+acc+"]", "text["+text+"]", "op["+op+"]", 
+    "currentTotal[" + currentTotal + "]", "lastTotal[" + lastTotal + "]", 
+    "text type: [" + typeof text + "]");
 }
