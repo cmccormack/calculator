@@ -104,7 +104,7 @@ function buttonPress(buttonName, buttonVal, $target) {
     digitButtonPress(buttonVal); 
   } else if (buttonName == "op") { 
     opButtonPress(buttonVal); 
-  } else if (buttonName == "convert") { 
+  } else if (buttonName == "convert") {
     convertValue(text, conversions[buttonVal]); 
   } else if (buttonName == "eq") { 
     eqButtonPress(); 
@@ -261,9 +261,9 @@ function displayText(t) {
 
 
 function convertValue(val, func) {
-
+  console.log(text, typeof text);
   if (chain) {
-    text = func(val);
+    text = String(func(val));
     displayText(text);
     currentTotal = calculate(op);
   } else {
